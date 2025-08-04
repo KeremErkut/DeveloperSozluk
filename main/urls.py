@@ -11,4 +11,6 @@ urlpatterns = [
     # - Dynamic URL capturing integer topic_id
     # - Routes to views.topic_detail view
 
+    path('new-topic/', views.create_topic_with_entry, name='create_topic'),
+
 ]

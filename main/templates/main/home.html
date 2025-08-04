@@ -3,6 +3,11 @@
 {% block title %}Homepage | DevSözlük{% endblock %}
 
 {% block content %}
+   <div class="d-flex justify-content-between align-items-center mb-4">
+       <h1>Başlıklar</h1>
+       <a href="{% url 'create_topic' %}" class="btn btn-success">Yeni başlık oluştur</a>
+   </div>
+
     <h1 class="mb-4">Başlıklar</h1>
 
     {% if topics %}

@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404, \
     redirect  # If we can't find the object in db queries the system should automaticly response with 404 error.
 from django.http import HttpResponse
 from . models import  Topic, Entry, User
-from . forms import EntryForm
+from . forms import EntryForm, TopicAndEntryForm
+
 
 
 # Create your views here.
@@ -43,12 +44,33 @@ def topic_detail(request, topic_id):
     context = {'topic': topic, 'entries': entries, 'form': form}
     return render(request, 'main/topic_detail.html', context)
 
-
-
-
-
     #Get all entries for the specific topic, ordered by creation date
     entries = topic.entries.order_by('-created_at')
     context = {'topic': topic, 'entries': entries}
     return render(request, 'main/topic_detail.html', context)
 
+def create_topic_with_entry(request):
+    #View function to create a new topic and entry
+    if request.method == 'POST':
+        form = TopicAndEntryForm(request.POST)
+        if form.is_valid():
+            user, created = User.objects.get_or_create(username=form.cleaned_data['username'])
+
+            #Create a new topic
+            topic = Topic.objects.create(
+                title = form.cleaned_data['title'],
+                created_by = user
+            )
+
+            #Create the first entry for the new topic
+            Entry.objects.create(
+                topic = topic,
+                author = user,
+                content = form.cleaned_data['content'],
+            )
+
+            #Redirect to the new topic's detail page.
+            return redirect('topic_detail', topic_id=topic.id)
+    else:
+        form = TopicAndEntryForm()
+    return render(request, 'main/create_topic.html', {'form': form})
