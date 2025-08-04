@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404, \
-    redirect  # If we can't find the object in db queries the system should automaticly response with 404 error.
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect  # If we can't find the object in db queries the system should automaticly response with 404 error.
 from django.http import HttpResponse
 from . models import  Topic, Entry, User
 from . forms import EntryForm, TopicAndEntryForm
+from django.contrib.auth.forms import UserCreationForm
 
 
 
@@ -16,6 +17,7 @@ def home(request):
     context = {'topics': topics}
     return render(request, 'main/home.html', context)
 
+@login_required
 def topic_detail(request, topic_id):
     # View function for a specific topic's detail page.
     # It fetches the topic and all associated entries.
@@ -27,7 +29,7 @@ def topic_detail(request, topic_id):
         form = EntryForm(request.POST)
         if form.is_valid():
             #Get user or create a new one if not exists
-            user, created = User.objects.get_or_create(username=form.cleaned_data['username'])
+            user = request.user # Use the logged-in user
 
             #Create the new entry
             Entry.objects.create(
@@ -49,12 +51,14 @@ def topic_detail(request, topic_id):
     context = {'topic': topic, 'entries': entries}
     return render(request, 'main/topic_detail.html', context)
 
+@login_required # Protects this view, user must be logged in to access.
 def create_topic_with_entry(request):
     #View function to create a new topic and entry
     if request.method == 'POST':
         form = TopicAndEntryForm(request.POST)
         if form.is_valid():
-            user, created = User.objects.get_or_create(username=form.cleaned_data['username'])
+            #Get the logged-in user directly from the request.
+            user = request.user
 
             #Create a new topic
             topic = Topic.objects.create(
@@ -74,3 +78,15 @@ def create_topic_with_entry(request):
     else:
         form = TopicAndEntryForm()
     return render(request, 'main/create_topic.html', {'form': form})
+
+def register(request):
+    # View function for user registration
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home') # Redirect to the home page after successful registration
+    else:
+        form = UserCreationForm()
+    return render(request, 'main/register.html', {'form': form})
+
