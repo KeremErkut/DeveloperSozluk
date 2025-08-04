@@ -3,6 +3,24 @@
 {% block title %}Homepage | DevSözlük{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Topics</h1>
-    <p>This will be the list of all topics.</p>
+    <h1 class="mb-4">Başlıklar</h1>
+
+    {% if topics %}
+        <div class="list-group">
+            {% for topic in topics %}
+                <a href="{% url 'topic_detail' topic.id %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ topic.title }}</h5>
+                        <small>{{ topic.created_at }}</small>
+                    </div>
+                    <p class="mb-1">{{ topic.created_by.username }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Henüz konu oluşturulmamış gibi duruyor.
+            <small>ya da oluşturuldu siz göremiyosunuz</small>
+        </div>
+    {% endif %}
 {% endblock %}

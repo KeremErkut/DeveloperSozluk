@@ -1,8 +1,28 @@
 {% extends 'base.html' %}
 
-{% block title %}Topic Detail | DevSözlük{% endblock %}
+{% block title %}{{ topic.title }} | DevSözlük{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Topic Detail</h1>
-    <p>This will show the title of the topic and a list of all entries under it.</p>
+    <h1 class="mb-4">{{ topic.title }}</h1>
+    <small class="text-muted">Created by {{ topic.created_by.username }} on {{ topic.created_at }}</small>
+    <hr>
+
+    {% if entries %}
+        <ul class="list-group">
+            {% for entry in entries %}
+                <li class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <small><strong>{{ entry.author.username }}</strong></small>
+                        <small class="text-muted">{{ entry.created_at }}</small>
+                    </div>
+                    <p class="mb-1">{{ entry.content }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            There are no entries for this topic yet.
+        </div>
+    {% endif %}
+
 {% endblock %}
