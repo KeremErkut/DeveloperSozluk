@@ -11,6 +11,18 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">DevSözlük</a>
+            <div class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <span class="navbar-text me-3">Hoş geldin, {{ user.username }}</span>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light">Çıkış Yap</button>
+                    </form>
+                {% else %}
+                    <a class="btn btn-outline-light me-2" href="{% url 'login' %}">Giriş Yap</a>
+                    <a class="btn btn-primary" href="{% url 'register' %}">Kayıt Ol</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
