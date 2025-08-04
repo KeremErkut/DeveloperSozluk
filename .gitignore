@@ -1,2 +1,5 @@
-.venv
+venv/
 .idea/
+devsozluk/.__pycache__/
+*.pyc
+db.sqlite3
