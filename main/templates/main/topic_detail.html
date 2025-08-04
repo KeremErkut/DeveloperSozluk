@@ -25,4 +25,10 @@
         </div>
     {% endif %}
 
+    <h2 class="mt-5 mb-4">Yeni girdi ekle.</h2>
+    <form method="post">
+        {% csrf_token %}{{form.as_p}}
+        <button type="submit" class="btn btn-primary">Gönder</button>
+    </form>
+
 {% endblock %}
