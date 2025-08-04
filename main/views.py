@@ -5,10 +5,10 @@ from django.http import HttpResponse
 def home(request):
     # View function for homepage.
     # It will diplay a list of all topics
-    return HttpResponse("This will be the home page, displaying all topics.")
+    return render(request, 'main/home.html')
 
 def topic_detail(request, topic_id):
     # View function for a specific topic's detail page.
     # It will display all entries under that topic
-    return HttpResponse(f"This will be the detail page for topic with ID: {topic_id}")
+    return render(request, 'main/topic_detail.html') # For now, we will just render the template without any context.
 
