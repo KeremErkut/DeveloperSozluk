@@ -7,7 +7,7 @@ urlpatterns = [
     # - Maps to views.home function
     # - Named 'home' for template reverse URL lookups
 
-    path('topic/<int:topic_id>', views.topic, name='topic'),
+    path('topic/<int:topic_id>/', views.topic_detail, name='topic_detail'),
     # - Dynamic URL capturing integer topic_id
     # - Routes to views.topic_detail view
 
