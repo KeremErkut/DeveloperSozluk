@@ -102,15 +102,16 @@ def register(request):
 
 
 def user_profile(request, user_id):
-    """
-    View function for displaying a user's profile and their entries.
-    """
-    target_user = get_object_or_404(User, id=user_id)
-    user_entries = Entry.objects.filter(author=target_user).order_by('-created_at')
+    user = get_object_or_404(User, id=user_id)
+    user_entries = Entry.objects.filter(author=user).order_by('-created_at')[:10]
+
+    # Check if the currently logged-in user is the profile owner
+    is_owner = request.user == user
 
     context = {
-        'target_user': target_user,
+        'profile_user': user,
         'user_entries': user_entries,
+        'is_owner': is_owner,  # Pass this boolean to the template
     }
     return render(request, 'main/user_profile.html', context)
 

@@ -1,31 +1,72 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ target_user.username }}'s Profile{% endblock %}
+{% block title %}{{ profile_user.username }}'s Profile{% endblock %}
+
+{% block search_bar %}{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">{{ target_user.username }}'s Profile</h1>
-    <h2 class="mb-3">All Entries by {{ target_user.username }}</h2>
-
-    {% if user_entries %}
-        {% for entry in user_entries %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <p class="card-text">{{ entry.content }}</p>
-                    <small class="text-muted">
-                        On topic: <a href="{% url 'topic_detail' entry.topic.id %}">{{ entry.topic.title }}</a>
-                        at {{ entry.created_at|date:"F j, Y, P" }}
-                    </small>
-                    {% if request.user == target_user %}
-                        <div class="mt-2">
-                            <a href="{% url 'edit_entry' entry.id %}" class="btn btn-sm btn-info">Edit</a>
-                            <a href="{% url 'delete_entry' entry.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</a>
-                        </div>
-                    {% endif %}
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                <div class="d-inline-block rounded-circle bg-primary text-white text-center p-3 mb-3" style="width: 80px; height: 80px; line-height: 55px; font-size: 2.5rem;">
+                    {{ profile_user.username.0|upper }}
                 </div>
+                <h5 class="fw-bold">@{{ profile_user.username }}</h5>
+                <small class="text-muted">Katılım: {{ profile_user.date_joined|date:"d.m.Y" }}</small>
             </div>
-        {% endfor %}
-    {% else %}
-        <p>{{ target_user.username }} hasn't created any entries yet.</p>
-    {% endif %}
+        </div>
 
+        {% if is_owner %}
+        <div class="card shadow-sm">
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action">Şifre Değiştir</a>
+                <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">Çıkış Yap</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">
+                {% if is_owner %}
+                    Son Entry'lerim
+                {% else %}
+                    Kullanıcının Son Entry'leri
+                {% endif %}
+            </h4>
+        </div>
+
+        {% if user_entries %}
+            {% for entry in user_entries %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <small class="text-muted fw-bold">
+                            <a href="{% url 'topic_detail' entry.topic.id %}" class="text-decoration-none text-dark">{{ entry.topic.title }}</a>
+                        </small>
+                        <p class="mt-2 mb-2">{{ entry.content|truncatechars:200 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ entry.created_at|timesince }} önce</small>
+                            {% if is_owner %}
+                                <div>
+                                    <a href="{% url 'edit_entry' entry.id %}" class="btn btn-sm btn-outline-info me-1">✏️ Edit</a>
+                                    <a href="{% url 'delete_entry' entry.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this entry?');">🗑️ Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                {% if is_owner %}
+                    Henüz hiç entry yazmamışsınız.
+                {% else %}
+                    Bu kullanıcının henüz hiç entry'si yok.
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
