@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('new-topic/', views.create_topic_with_entry, name='create_topic'),
     path('register/', views.register, name='register'),
-    path('accounts/profile/', views.user_profile, name='user_profile'), # Path for user profile.
-
+    path('entry/<int:entry_id>/edit/', views.edit_entry, name='edit_entry'),     # Path for editing entries
+    path('entry/<int:entry_id>/delete/', views.delete_entry, name='delete_entry'), # Path for deleting entries
+    path('user/<int:user_id>/', views.user_profile, name='user_profile'), # Unified profile URL
 ]

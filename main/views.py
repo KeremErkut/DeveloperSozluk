@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from . models import  Topic, Entry, User
 from . forms import EntryForm, TopicAndEntryForm
 from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -91,12 +92,55 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 
-@login_required
-def user_profile(request):
-    #View function for displaying the user's profile and their entries
-    user_entries = Entry.objects.filter(author = request.user).order_by('-created_at')
+def user_profile(request, user_id):
+    """
+    View function for displaying a user's profile and their entries.
+    """
+    target_user = get_object_or_404(User, id=user_id)
+    user_entries = Entry.objects.filter(author=target_user).order_by('-created_at')
 
     context = {
-        'user_entries': user_entries
+        'target_user': target_user,
+        'user_entries': user_entries,
     }
     return render(request, 'main/user_profile.html', context)
+
+
+@login_required
+def edit_entry(request, entry_id):
+    """
+    View function for editing an existing entry.
+    """
+    entry = get_object_or_404(Entry, id=entry_id)
+
+    # Ensure that only the author of the entry can edit it
+    if entry.author != request.user:
+        return redirect('topic_detail', topic_id=entry.topic.id)
+
+    if request.method == 'POST':
+        form = EntryForm(request.POST, instance=entry)
+        if form.is_valid():
+            form.save()
+            return redirect('topic_detail', topic_id=entry.topic.id)
+    else:
+        form = EntryForm(instance=entry)
+
+    context = {'form': form, 'entry': entry}
+    return render(request, 'main/edit_entry.html', context)
+
+
+@login_required
+def delete_entry(request, entry_id):
+
+    # View function for deleting an entry.
+
+    entry = get_object_or_404(Entry, id=entry_id)
+
+    # Ensure that only the author of the entry can delete it
+    if entry.author == request.user:
+        topic_id = entry.topic.id
+        entry.delete()
+        return redirect('topic_detail', topic_id=topic_id)
+
+    # Redirect back to the topic if the user is not the author
+    return redirect('topic_detail', topic_id=entry.topic.id)
