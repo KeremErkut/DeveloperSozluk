@@ -13,7 +13,7 @@
             <a class="navbar-brand" href="{% url 'home' %}">DevSözlük</a>
             <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
-                    <span class="navbar-text me-3">Hoş geldin, {{ user.username }}</span>
+                    <a href="{% url 'user_profile' %}" class="btn btn-outline-light me-2">Hoş geldin, {{ user.username }}</a>
                     <form action="{% url 'logout' %}" method="post" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-light">Çıkış Yap</button>

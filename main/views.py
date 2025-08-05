@@ -90,3 +90,13 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'main/register.html', {'form': form})
 
+
+@login_required
+def user_profile(request):
+    #View function for displaying the user's profile and their entries
+    user_entries = Entry.objects.filter(author = request.user).order_by('-created_at')
+
+    context = {
+        'user_entries': user_entries
+    }
+    return render(request, 'main/user_profile.html', context)

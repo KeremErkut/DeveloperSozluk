@@ -12,5 +12,7 @@ urlpatterns = [
     # - Routes to views.topic_detail view
 
     path('new-topic/', views.create_topic_with_entry, name='create_topic'),
+    path('register/', views.register, name='register'),
+    path('accounts/profile/', views.user_profile, name='user_profile'), # Path for user profile.
 
 ]
