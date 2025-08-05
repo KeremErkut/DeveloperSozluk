@@ -4,25 +4,35 @@
 
 {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Başlıklar</h1>
-        <a href="{% url 'create_topic' %}" class="btn btn-success">Yeni başlık oluştur</a>
+        <h1 class="mb-0">Trend Başlıklar</h1>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                En Popüler
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item" href="#">En Yeni</a></li>
+                <li><a class="dropdown-item" href="#">En Popüler</a></li>
+            </ul>
+        </div>
+        <a href="{% url 'create_topic' %}" class="btn btn-success d-none d-lg-block">Yeni başlık oluştur</a>
     </div>
-
-    <form class="d-flex mb-4" role="search" method="get">
-        <input class="form-control me-2" type="search" placeholder="Başlıklarda ara..." aria-label="Search" name="q" value="{{ search_query|default:'' }}">
-        <button class="btn btn-outline-success" type="submit">Ara</button>
-    </form>
+    <p class="text-muted mb-4">En çok tartışılan developer konuları</p>
 
     {% if page_obj.object_list %}
-        <div class="list-group">
+        <div class="row">
             {% for topic in page_obj.object_list %}
-                <a href="{% url 'topic_detail' topic.id %}" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between align-items-center">
-                        <h5 class="mb-1 d-inline-block">{{ topic.title }}</h5>
-                        <span class="badge bg-secondary ms-2">{{ topic.entry_count }}</span>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'topic_detail' topic.id %}" class="text-decoration-none text-dark">{{ topic.title }}</a></h5>
+                        <small class="text-muted">{{ topic.entry_count }} entry</small>
                     </div>
-                    <small class="text-muted mt-2">by {{ topic.created_by.username }} on {{ topic.created_at|date:"F j, Y, P" }}</small>
-                </a>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <small class="text-muted">@{{ topic.created_by.username }}</small>
+                        <small class="text-muted">{{ topic.created_at|timesince }} önce</small>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
 
@@ -30,32 +40,32 @@
             <ul class="pagination justify-content-center">
                 {% if page_obj.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1" aria-label="First">First</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">Previous</a>
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
                     </li>
                 {% endif %}
 
-                <li class="page-item disabled">
-                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                </li>
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endfor %}
 
                 {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">Next</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">Last</a>
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
                     </li>
                 {% endif %}
             </ul>
         </nav>
 
     {% else %}
-        <div class="alert alert-info" role="alert">
-            Henüz konu oluşturulmamış gibi duruyor.
-            <small>ya da oluşturuldu siz göremiyosunuz</small>
+        <div class="alert alert-info text-center" role="alert">
+            <h4 class="alert-heading">Henüz hiç konu yok!</h4>
+            <p>DevSözlük'te ilk başlığı sen başlatmak ister misin?</p>
+            <hr>
+            <a href="{% url 'create_topic' %}" class="btn btn-primary">Hemen yeni bir başlık oluştur</a>
         </div>
     {% endif %}
 
