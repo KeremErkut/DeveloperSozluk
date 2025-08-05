@@ -1,13 +1,56 @@
 {% extends 'base.html' %}
 
-{% block title %}Create a New Topic | DevSözlük{% endblock %}
+{% block title %}Yeni Başlık Oluştur | DevSözlük{% endblock %}
+
+{% block search_bar %}{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Create a New Topic</h1>
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm p-4" style="max-width: 800px; width: 100%;">
+        <div class="card-body">
+            <h2 class="card-title fw-bold">Yeni Başlık Oluştur</h2>
+            <p class="card-subtitle text-muted mb-4">DevSözlük topluluğunda yeni bir konu başlatın</p>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Create Topic</button>
-    </form>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">Başlık</label>
+                    {{ form.title }}
+                    <small class="form-text text-muted d-flex justify-content-between mt-1">
+                        <span>Başlık yazın.. (örn: React Best Practices, Django Tips)</span>
+                        <span id="title-counter">0/100</span>
+                    </small>
+                    {% if form.title.errors %}
+                        <div class="text-danger mt-1">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.content.id_for_label }}" class="form-label">İlk Entry</label>
+                    {{ form.content }}
+                    <small class="form-text text-muted d-flex justify-content-between mt-1">
+                        <span>Bu başlıkla ilgili düşüncelerinizi, deneyimlerinizi veya sorularınızı paylaşın...</span>
+                        <span id="content-counter">0/1000</span>
+                    </small>
+                    <p class="form-text text-muted mt-2">
+                        <small>İpucu: Markdown formatı desteklenmektedir. **kalın**, *italik*, `kod` kullanabilirsiniz.</small>
+                    </p>
+                    {% if form.content.errors %}
+                        <div class="text-danger mt-1">{{ form.content.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="alert alert-info mt-4" role="alert">
+                    <h5 class="alert-heading">Topluluk Kuralları</h5>
+                    <p>Sevgi dolu bir dil kullanın, kişisel saldırılardan kaçının ve konu başlığıyla ilgili kalın. Spam ve reklam içerikli yazılar yazmayın.</p>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Başlığı Oluştur</button>
+                    <button type="reset" class="btn btn-secondary btn-lg">Temizle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
