@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect  # If we can't find the object in db queries the system should automaticly response with 404 error.
 from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect  # If we can't find the object in db queries the system should automaticly response with 404 error.
 from . models import  Topic, Entry, User
 from . forms import EntryForm, TopicAndEntryForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 
 # Create your views here.
@@ -14,7 +15,7 @@ def home(request):
     # It fetches all topics and sends them to template.
 
     #Order topics by creation date in descending order.
-    topics = Topic.objects.order_by('-created_at')
+    topics = Topic.objects.annotate(entry_count=Count('entry')).order_by('-created_at')
     context = {'topics': topics}
     return render(request, 'main/home.html', context)
 
