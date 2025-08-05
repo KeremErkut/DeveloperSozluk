@@ -14,12 +14,14 @@
             <a class="navbar-brand" href="{% url 'home' %}">DevSözlük</a>
             <!-- Arama formu, arama sonuçları sayfasına yönlendirildi -->
             <form class="d-flex mx-auto" role="search" method="GET" action="{% url 'search' %}">
-                <input class="form-control me-2" type="search" placeholder="Ara" aria-label="Search" name="q">
+                <input class="form-control me-2" type="search" placeholder="Ara" aria-label="Ara" name="q">
                 <button class="btn btn-outline-light" type="submit">Ara</button>
             </form>
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'user_profile' request.user.id %}" class="btn btn-outline-light me-2">Hoş geldin, {{ request.user.username }}</a>
+                    <a href="{% url 'user_profile' request.user.id %}" class="btn btn-outline-light me-2">
+                        <i class="fa fa-user me-1"></i> {{ request.user.username }}
+                    </a>
                     <form action="{% url 'logout' %}" method="post" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-light">Çıkış Yap</button>
