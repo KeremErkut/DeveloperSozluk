@@ -8,9 +8,14 @@
         <a href="{% url 'create_topic' %}" class="btn btn-success">Yeni başlık oluştur</a>
     </div>
 
-    {% if topics %}
+    <form class="d-flex mb-4" role="search" method="get">
+        <input class="form-control me-2" type="search" placeholder="Başlıklarda ara..." aria-label="Search" name="q" value="{{ search_query|default:'' }}">
+        <button class="btn btn-outline-success" type="submit">Ara</button>
+    </form>
+
+    {% if page_obj.object_list %}
         <div class="list-group">
-            {% for topic in topics %}
+            {% for topic in page_obj.object_list %}
                 <a href="{% url 'topic_detail' topic.id %}" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between align-items-center">
                         <h5 class="mb-1 d-inline-block">{{ topic.title }}</h5>
@@ -20,10 +25,38 @@
                 </a>
             {% endfor %}
         </div>
+
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
     {% else %}
         <div class="alert alert-info" role="alert">
             Henüz konu oluşturulmamış gibi duruyor.
             <small>ya da oluşturuldu siz göremiyosunuz</small>
         </div>
     {% endif %}
+
 {% endblock %}

@@ -7,9 +7,9 @@
     <small class="text-muted">Created by {{ topic.created_by.username }} on {{ topic.created_at|date:"F j, Y, P" }}</small>
     <hr>
 
-    {% if entries %}
+    {% if page_obj.object_list %}
         <ul class="list-group">
-            {% for entry in entries %}
+            {% for entry in page_obj.object_list %}
                 <li class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
                         <small><strong><a href="{% url 'user_profile' entry.author.id %}">{{ entry.author.username }}</a></strong></small>
@@ -25,6 +25,33 @@
                 </li>
             {% endfor %}
         </ul>
+
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
     {% else %}
         <div class="alert alert-warning" role="alert">
             There are no entries for this topic yet.
@@ -32,9 +59,15 @@
     {% endif %}
 
     <h2 class="mt-5 mb-4">Add a new entry</h2>
-    <form method="post">
-        {% csrf_token %}{{form.as_p}}
-        <button type="submit" class="btn btn-primary">Gönder</button>
-    </form>
-
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Gönder</button>
+        </form>
+    {% else %}
+        <div class="alert alert-warning">
+            Entry eklemek için <a href="{% url 'login' %}">giriş yapmanız</a> veya <a href="{% url 'register' %}">kayıt olmanız</a> gerekir.
+        </div>
+    {% endif %}
 {% endblock %}

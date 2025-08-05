@@ -7,50 +7,58 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.core.paginator import Paginator
 
 
 # Create your views here.
 def home(request):
-    # View function for homepage.
-    # It fetches all topics and sends them to template.
 
-    #Order topics by creation date in descending order.
-    topics = Topic.objects.annotate(entry_count=Count('entry')).order_by('-created_at')
-    context = {'topics': topics}
+    # View function for the homepage, displaying all topics with search and pagination.
+
+    search_query = request.GET.get('q')
+
+    if search_query:
+        topics = Topic.objects.filter(title__icontains=search_query).annotate(entry_count=Count('entry')).order_by('-created_at')
+    else:
+        topics = Topic.objects.annotate(entry_count=Count('entry')).order_by('-created_at')
+
+    # Pagination logic
+    paginator = Paginator(topics, 5)  # Show 5 topics per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'page_obj': page_obj, 'search_query': search_query}
     return render(request, 'main/home.html', context)
 
 @login_required
 def topic_detail(request, topic_id):
-    # View function for a specific topic's detail page.
-    # It fetches the topic and all associated entries.
-
-    # Use get_object_or_404 to handle non-existent topics
+    """
+    View function for displaying a topic's entries with pagination.
+    """
     topic = get_object_or_404(Topic, id=topic_id)
+    all_entries = topic.entry_set.all().order_by('created_at')
+
+    # Pagination logic
+    paginator = Paginator(all_entries, 10)  # Show 10 entries per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     if request.method == 'POST':
         form = EntryForm(request.POST)
         if form.is_valid():
-            #Get user or create a new one if not exists
-            user = request.user # Use the logged-in user
-
-            #Create the new entry
-            Entry.objects.create(
-                topic = topic,
-                author = user,
-                content = form.cleaned_data['content'],
-            )
-            # Redirect to the same page to show the new entry
+            new_entry = form.save(commit=False)
+            new_entry.author = request.user
+            new_entry.topic = topic
+            new_entry.save()
             return redirect('topic_detail', topic_id=topic.id)
     else:
-        form = EntryForm() # An empty form for GET requests
+        form = EntryForm()
 
-    entries = topic.entry_set.order_by('-created_at')
-    context = {'topic': topic, 'entries': entries, 'form': form}
-    return render(request, 'main/topic_detail.html', context)
-
-    #Get all entries for the specific topic, ordered by creation date
-    entries = topic.entries.order_by('-created_at')
-    context = {'topic': topic, 'entries': entries}
+    context = {
+        'topic': topic,
+        'page_obj': page_obj,  # Pass the paginated object to the template
+        'form': form
+    }
     return render(request, 'main/topic_detail.html', context)
 
 @login_required # Protects this view, user must be logged in to access.
