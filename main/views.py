@@ -17,7 +17,7 @@ def home(request):
     topics = Topic.objects.annotate(entry_count=Count('entry')).order_by('-created_at')
 
     # Pagination logic
-    paginator = Paginator(topics, 5)  # Show 5 topics per page
+    paginator = Paginator(topics, 9 )  # Show 5 topics per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

@@ -1,5 +1,32 @@
-venv/
-.idea/
-devsozluk/.__pycache__/
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Django
 db.sqlite3
+db.sqlite3-journal
+media/
+
+# Virtualenv
+venv/
+.env
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# Migration dosyaları (opsiyonel)
+*/migrations/
+!*/migrations/__init__.py
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Coverage
+.coverage
+htmlcov/
