@@ -12,7 +12,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container d-flex">
             <a class="navbar-brand" href="{% url 'home' %}">DevSözlük</a>
-            <form class="d-flex mx-auto" role="search" method="GET" action="{% url 'home' %}">
+            <!-- Arama formu, arama sonuçları sayfasına yönlendirildi -->
+            <form class="d-flex mx-auto" role="search" method="GET" action="{% url 'search' %}">
                 <input class="form-control me-2" type="search" placeholder="Ara" aria-label="Search" name="q">
                 <button class="btn btn-outline-light" type="submit">Ara</button>
             </form>

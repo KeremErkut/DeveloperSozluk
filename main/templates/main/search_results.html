@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Arama Sonuçları{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">"{{ query }}" için Arama Sonuçları</h1>
+    {% if results %}
+        <p class="lead">{{ results|length }} adet sonuç bulundu.</p>
+        <div class="row">
+            {% for topic in results %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'topic_detail' topic.id %}" class="text-decoration-none text-dark">{{ topic.title }}</a></h5>
+                        <small class="text-muted">{{ topic.entry_count }} entry</small>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+                        <small class="text-muted">@{{ topic.created_by.username }}</small>
+                        <small class="text-muted">{{ topic.created_at|timesince }} önce</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Sonuç Bulunamadı</h4>
+            <p><strong>"{{ query }}"</strong> ile ilgili herhangi bir başlık bulunamadı. Başka bir arama terimi deneyin.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
