@@ -4,6 +4,10 @@
 
 ## Screenshots
 
+### Logo
+![DeveloperSözlük Logo](img/logo.png)
+*Logo of DeveloperSozluk*
+
 ### Homepage
 ![DeveloperSözlük Homepage](img/Screenshot%20from%202025-08-08%2009-55-52.png)
 *Homepage displaying topic list and user login areas*
@@ -19,6 +23,10 @@
 ### Topic Page
 ![DeveloperSözlük TopicPage](img/Screenshot%202025-08-12%20125902.png)
 *Topic detail page - all entries and interaction options*
+ 
+### Search Page
+![DeveloperSözlük SearchPage](img/Screenshot%202025-08-12%20140529.png)
+*Search page- all the related results showen here*
  <!-- You can add a screenshot link here -->
 
 ## 🚀 Project Goal
