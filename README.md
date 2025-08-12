@@ -2,7 +2,23 @@
 
 **DeveloperSözlük** is an interactive dictionary and discussion platform for developers, built with Django. Users can create topics related to software and technology, add entries to these topics, and exchange information with other developers.
 
+## Screenshots
+
+### Homepage
 ![DeveloperSözlük Homepage](img/Screenshot%20from%202025-08-08%2009-55-52.png)
+*Homepage displaying topic list and user login areas*
+
+### User Profile
+![DeveloperSözlük UserProfile](img/Screenshot%202025-08-12%20125501.png)
+*User profile page - personal information and user entries*
+
+### Create Entry
+![DeveloperSözlük CreateEntry](img/Screenshot%202025-08-12%20125556.png)
+*New entry creation form*
+
+### Topic Page
+![DeveloperSözlük TopicPage](img/Screenshot%202025-08-12%20125902.png)
+*Topic detail page - all entries and interaction options*
  <!-- You can add a screenshot link here -->
 
 ## 🚀 Project Goal
